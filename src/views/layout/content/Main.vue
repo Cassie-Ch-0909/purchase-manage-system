@@ -4,7 +4,10 @@
   <div class="header">
     <el-row>
       <!-- 加起来是24 -->
-      <el-col :span="4">11</el-col>
+      <el-col :span="4">
+        <span class="iconfont icon-right-indent"></span>
+        <span class="iconfont icon-left-indent"></span>
+      </el-col>
       <el-col :span="20">
         <div class="right">
           22
