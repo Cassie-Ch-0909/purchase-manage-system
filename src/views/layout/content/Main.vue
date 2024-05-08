@@ -39,11 +39,13 @@ function changeOpen() {
     </el-row>
   </div>
   <!-- 路由的出口 -->
-  <router-view></router-view>
+  <div class="wrapper">
+    <router-view></router-view>
+  </div>
 </template>
 <style lang="scss" scoped>
 .header {
-  background: pink;
+  background: #1e78bf;
   height: 50px;
   line-height: 50px;
   .iconfont {
@@ -55,5 +57,8 @@ function changeOpen() {
     text-align: right;
     padding-right: 20px;
   }
+}
+.wrapper{
+  padding: 10px;
 }
 </style>
