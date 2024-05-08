@@ -33,24 +33,24 @@ const handleClose = (key, keyPath) => {
       <span>首页</span>
     </el-menu-item>
     <!-- 产品管理 -->
-    <el-sub-menu index="2">
+    <el-sub-menu index="/product">
       <template #title>
         <el-icon><Goods /></el-icon>
         <span>产品管理</span>
       </template>
       <!-- 产品管理子菜单 -->
-      <el-menu-item index="2-1">产品列表</el-menu-item>
-      <el-menu-item index="2-2">产品分类</el-menu-item>
+      <el-menu-item index="/product/productList">产品列表</el-menu-item>
+      <el-menu-item index="/product/category">产品分类</el-menu-item>
     </el-sub-menu>
     <!-- 订单管理 -->
-    <el-sub-menu index="3">
+    <el-sub-menu index="/order">
       <template #title>
         <el-icon><Document /></el-icon>
         <span>订单管理</span>
       </template>
       <!-- 订单管理子菜单 -->
-      <el-menu-item index="3-1">订单列表</el-menu-item>
-      <el-menu-item index="3-2">汇总清单</el-menu-item>
+      <el-menu-item index="/order/orderList">订单列表</el-menu-item>
+      <el-menu-item index="/order/collect">汇总清单</el-menu-item>
       <el-menu-item index="3-3">订单审核</el-menu-item>
     </el-sub-menu>
     <!-- 广告管理 -->
