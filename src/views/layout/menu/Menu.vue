@@ -5,6 +5,14 @@ import {
   Goods,
   VideoCamera
 } from "@element-plus/icons-vue";
+import {defineProps } from "vue";
+const prop = defineProps({
+  isCollapse: {
+    type: Boolean,
+    default: false
+  }
+});
+
 const handleOpen = (key, keyPath) => {
   console.log(key, keyPath);
 };
@@ -17,6 +25,7 @@ const handleClose = (key, keyPath) => {
     active-text-color="#ffd04b"
     background-color="#112f50"
     class="el-menu-vertical-demo"
+    :collapse="prop.isCollapse"
     :default-active="$route.meta.activeMenu || $route.path"
     router
     text-color="#fff"
@@ -25,7 +34,7 @@ const handleClose = (key, keyPath) => {
   >
     <!-- 采购后台管理系统 -->
     <el-menu-item>
-      采购后台管理系统
+      <span>采购后台管理系统</span>
     </el-menu-item>
     <!-- 首页 -->
     <el-menu-item index="/">
@@ -73,5 +82,15 @@ const handleClose = (key, keyPath) => {
 .el-menu-item.is-active {
     color: #fff;
     background: #1e78bf;
+}
+
+/* 
+    当菜单不处于折叠状态（即没有 el-menu--collapse 类时）：
+    将菜单的宽度设置为 200 像素。
+    将菜单的最小高度设置为 400 像素。
+*/
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
 }
 </style>
