@@ -1,3 +1,13 @@
+<script setup>
+ import {HomeTotal} from '@/api/home'
+ import {onMounted} from 'vue'
+ onMounted(()=>{
+   HomeTotal().then(res=>{
+     console.log('首页获取数据',res)
+   })
+ })
+</script>
+
 <template>
     <div class="home">
       <!--1.  顶部区域布局---------- -->
@@ -99,10 +109,6 @@
   
     </div>
   </template>
-  
-  <script setup>
- 
-  </script>
   
   <style lang="scss" scoped>
   .header {
