@@ -1,19 +1,38 @@
 <script setup>
-import { getHomeTotalAPI } from "@/api/home";
-import { onMounted,ref } from "vue";
+import { getHomeTotalAPI,getHomeOrderAPI } from "@/api/home";
+import { onMounted, ref } from "vue";
 
 /* 
     调接口获取首页数据统计
 */
-const dataCountObj = ref({})
+const dataCountObj = ref({});
 const getHomeTotal = async () => {
   const res = await getHomeTotalAPI();
   // console.log(res);
-  dataCountObj.value = res.data.data.list
+  dataCountObj.value = res.data.data.list;
+};
+
+/* 
+    数据格式----23456 --> 23,456
+*/
+const numHandle = value => {
+  if (!value) return;
+  return value.toLocaleString();
+};
+
+/* 
+    调接口获取首页订单数据
+*/
+const dataOrderObj = ref({});
+const getHomeOrder = async () => {
+  const res = await getHomeOrderAPI();
+  console.log(res);
+  dataOrderObj.value = res.data.list;
 };
 
 onMounted(() => {
   getHomeTotal();
+  getHomeOrder()
 });
 </script>
 
@@ -23,26 +42,29 @@ onMounted(() => {
     <div class="header">
       <div class="item">
         总销售额
-        <div class="num">{{ dataCountObj.saleTotal }}</div>
-        <div class="bottom">今日销售额：{{ dataCountObj.sale }}</div>
+        <div class="num">{{ numHandle(dataCountObj.saleTotal) }}</div>
+        <div class="bottom">今日销售额：{{ numHandle(dataCountObj.sale) }}</div>
       </div>
       <div class="item">
         总访问量
-        <div class="num">{{dataCountObj.viewsTotal}}</div>
-        <div class="bottom">今日访问量：{{ dataCountObj.views }}</div>
+        <div class="num">{{ numHandle(dataCountObj.viewsTotal) }}</div>
+        <div class="bottom">
+          今日访问量：{{ numHandle(dataCountObj.views) }}
+        </div>
       </div>
       <div class="item">
         总收藏量
-        <div class="num">{{dataCountObj.collectTotal}}</div>
-        <div class="bottom">今日销售额：{{ dataCountObj.collect }}</div>
+        <div class="num">{{ numHandle(dataCountObj.collectTotal) }}</div>
+        <div class="bottom">
+          今日销售额：{{ numHandle(dataCountObj.collect) }}
+        </div>
       </div>
       <div class="item">
         总支付量
-        <div class="num">{{ dataCountObj.payTotal }}</div>
-        <div class="bottom">今日支付量：{{ dataCountObj.pay }}</div>
+        <div class="num">{{ numHandle(dataCountObj.payTotal) }}</div>
+        <div class="bottom">今日支付量：{{ numHandle(dataCountObj.pay) }}</div>
       </div>
     </div>
-
     <!--2. 访问数据统计 ----------------->
     <div class="content">
       <div class="time-info" id="box13">
@@ -68,15 +90,15 @@ onMounted(() => {
           <el-row>
             <el-col :span="8">
               <div class="title">今日订单数</div>
-              <div>123</div>
+              <div>{{ dataOrderObj.curOrderCount }}</div>
             </el-col>
             <el-col :span="8">
               <div class="title">汇总确认订单</div>
-              <div>123</div>
+              <div>{{ dataOrderObj.curCollect }}</div>
             </el-col>
             <el-col :span="8">
               <div class="title">今日金额</div>
-              <div>123</div>
+              <div>{{ dataOrderObj.curMoney }}</div>
             </el-col>
           </el-row>
         </div>
@@ -91,15 +113,15 @@ onMounted(() => {
           <el-row>
             <el-col :span="8">
               <div class="title">本月订单数</div>
-              <div>123</div>
+              <div>{{ dataOrderObj.orderCount }}</div>
             </el-col>
             <el-col :span="8">
               <div class="title">汇总确认订单</div>
-              <div>123</div>
+              <div>{{ dataOrderObj.collect }}</div>
             </el-col>
             <el-col :span="8">
               <div class="title">累计金额</div>
-              <div>123</div>
+              <div>{{ dataOrderObj.money }}</div>
             </el-col>
           </el-row>
         </div>
