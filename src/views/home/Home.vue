@@ -35,7 +35,9 @@ const getHomeOrder = async () => {
     左边折线柱状图
 */
 const drawTable = (data, lineData, barData) => {
-  var myChart = echarts.init(document.getElementById("draw"));
+  let dsiab_com = document.getElementById("draw")
+  dsiab_com.removeAttribute('_echarts_instance_')
+  var myChart = echarts.init(dsiab_com);
   // 绘制图表
   myChart.setOption({
     title: {
@@ -65,7 +67,14 @@ const drawTable = (data, lineData, barData) => {
     右边饼图
 */
 const drawPie = (pieData)=>{
-  const myChart = echarts.init(document.getElementById("pie"));
+  // const myChart = echarts.init(document.getElementById("pie"));
+  let dsiab_com = document.getElementById("pie")
+  // 移除了 dsiab_com 元素上名为 _echarts_instance_ 的属性。
+  // 在 ECharts 中，当一个元素被初始化为图表后，会在该元素上添加 _echarts_instance_ 属性，用于保存该图表的实例。
+  // 通过移除该属性，可以清除之前可能存在的旧图表实例，以便重新初始化新的图表。
+  dsiab_com.removeAttribute('_echarts_instance_')
+  var myChart = echarts.init(dsiab_com);
+
   myChart.setOption({
     tooltip: {
     trigger: 'item'
