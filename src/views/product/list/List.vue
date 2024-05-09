@@ -30,10 +30,31 @@ const handleDelete = (index, row) => {
   console.log(index, row);
 };
 
-async function getProjectList() {
-  const res = await getProjectListAPI();
+/* 
+    定义分页数据
+*/
+const pageSize = ref(1);
+const total = ref(10)
+
+/* 
+    调接口获取商品列表
+*/
+async function getProjectList(param) {
+  const res = await getProjectListAPI({
+    page:param
+  });
   console.log(res);
   tableData.value = res.data.data;
+  total.value = res.data.total
+  pageSize.value = res.data.pageSize
+}
+
+/* 
+    接收子传父传过来的pageSIze，并发请求获取数据
+*/
+function getCurrentPage(newPageSize){
+  // console.log(newPageSize)
+  getProjectList(newPageSize)
 }
 
 onMounted(() => {
@@ -165,7 +186,7 @@ onMounted(() => {
       </el-table>
       <!-- 分页 -->
       <div class="page">
-        <pagination></pagination>
+        <pagination :pageSize="pageSize" :total="total" @getCurrentPage="getCurrentPage"></pagination>
       </div>
     </div>
   </div>
