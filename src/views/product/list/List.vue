@@ -2,10 +2,10 @@
 import { ref, onMounted } from "vue";
 import { Plus, Delete, Edit } from "@element-plus/icons-vue";
 import { ElTable } from "element-plus";
-import { getProjectListAPI } from "../../../api/product.js";
+import { getProjectListAPI, searchGoodsAPI } from "../../../api/product.js";
 import dayjs from "dayjs";
 import { removeHTMLTag } from "../../../utils/common";
-import pagination from '@/components/pagination/Pagination.vue'
+import pagination from "@/components/pagination/Pagination.vue";
 // 搜索框数组对象
 const formInline = ref({
   name: "",
@@ -15,9 +15,35 @@ const formInline = ref({
 // 表格内容对象
 const tableData = ref([]);
 
+/* 
+    调取查询接口
+*/
+async function searchGoods(params) {
+  const res = await searchGoodsAPI(params);
+  console.log(res);
+  if (res.data.status === 200) {
+    tableData.value = res.data.result;
+    // res.data.result.length / pageSize.value 计算出总页数，但由于页数必须是整数，
+    // 因此使用 Math.ceil() 方法向上取整，确保总页数是整数
+    total.value = Math.ceil(res.data.result.length / pageSize.value);
+  }
+}
+
 // 查询按钮
 const onSubmit = () => {
   console.log(formInline.value);
+  searchGoods({ search: formInline.value.name });
+};
+
+// 返回按钮
+const toBack = () => {
+  // 清空搜索表单
+  formInline.value = {
+    user: "",
+    date: ""
+  };
+  // 获取第一页数据
+  getProjectList();
 };
 
 // 编辑按钮
@@ -34,27 +60,27 @@ const handleDelete = (index, row) => {
     定义分页数据
 */
 const pageSize = ref(1);
-const total = ref(10)
+const total = ref(10);
 
 /* 
     调接口获取商品列表
 */
 async function getProjectList(param) {
   const res = await getProjectListAPI({
-    page:param
+    page: param
   });
   console.log(res);
   tableData.value = res.data.data;
-  total.value = res.data.total
-  pageSize.value = res.data.pageSize
+  total.value = res.data.total;
+  pageSize.value = res.data.pageSize;
 }
 
 /* 
     接收子传父传过来的pageSIze，并发请求获取数据
 */
-function getCurrentPage(newPageSize){
+function getCurrentPage(newPageSize) {
   // console.log(newPageSize)
-  getProjectList(newPageSize)
+  getProjectList(newPageSize);
 }
 
 onMounted(() => {
@@ -89,6 +115,9 @@ onMounted(() => {
           <el-form-item>
             <el-button type="primary" @click="onSubmit" size="small">
               查询
+            </el-button>
+            <el-button type="primary" @click="toBack" size="small">
+              返回
             </el-button>
           </el-form-item>
         </el-form>
@@ -186,13 +215,17 @@ onMounted(() => {
       </el-table>
       <!-- 分页 -->
       <div class="page">
-        <pagination :pageSize="pageSize" :total="total" @getCurrentPage="getCurrentPage"></pagination>
+        <pagination
+          :pageSize="pageSize"
+          :total="total"
+          @getCurrentPage="getCurrentPage"
+        ></pagination>
       </div>
     </div>
   </div>
 </template>
 <style scoped lang="scss">
-.page{
+.page {
   padding: 10px;
 }
 .header {
