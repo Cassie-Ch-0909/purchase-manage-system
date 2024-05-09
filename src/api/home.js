@@ -21,7 +21,7 @@ export function getHomeTotalAPI() {
 */
 export function getHomeLineAPI() {
   return request({
-    url: "/api/home/farmat",
+    url: "/api/home/format",
     method: "GET"
   });
 }

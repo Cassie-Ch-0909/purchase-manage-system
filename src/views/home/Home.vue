@@ -1,6 +1,7 @@
 <script setup>
-import { getHomeTotalAPI,getHomeOrderAPI } from "@/api/home";
+import { getHomeTotalAPI, getHomeOrderAPI, getHomeLineAPI } from "@/api/home";
 import { onMounted, ref } from "vue";
+import echarts from "@/plugins/echarts.js";
 
 /* 
     调接口获取首页数据统计
@@ -26,13 +27,112 @@ const numHandle = value => {
 const dataOrderObj = ref({});
 const getHomeOrder = async () => {
   const res = await getHomeOrderAPI();
-  console.log(res);
+  // console.log(res);
   dataOrderObj.value = res.data.list;
+};
+
+/* 
+    左边折线柱状图
+*/
+const drawTable = (data, lineData, barData) => {
+  var myChart = echarts.init(document.getElementById("draw"));
+  // 绘制图表
+  myChart.setOption({
+    title: {
+      // text: "ECharts 入门示例"
+    },
+    tooltip: {},
+    xAxis: {
+      data
+    },
+    yAxis: {},
+    series: [
+      {
+        name: "销量",
+        type: "line",
+        data: lineData
+      },
+      {
+        name: "销量额",
+        type: "bar",
+        data: barData
+      }
+    ]
+  });
+};
+
+/* 
+    右边饼图
+*/
+const drawPie = (pieData)=>{
+  const myChart = echarts.init(document.getElementById("pie"));
+  myChart.setOption({
+    tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    top: '1%',
+    left: 'center'
+  },
+  series: [
+    {
+      name: 'Access From',
+      type: 'pie',
+      radius: ['40%', '70%'],
+      avoidLabelOverlap: false,
+      itemStyle: {
+        borderRadius: 10,
+        borderColor: '#fff',
+        borderWidth: 2
+      },
+      label: {
+        show: false,
+        position: 'center'
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: 40,
+          fontWeight: 'bold'
+        }
+      },
+      labelLine: {
+        show: false
+      },
+      data: pieData
+    }
+  ]
+  })
+}
+
+/* 
+    调接口获取首页折线图数据
+*/
+const getHomeLine = async () => {
+  const res = await getHomeLineAPI();
+  console.log(res);
+  // 数据处理成想要的数据格式 柱状图、折线图=[]  饼图=[{name:'',value:''}]
+  let data = res.data.result.data.sale_money;
+  let x = [],
+    lineData = [],
+    barData = [],
+    pieData = [];
+  data.forEach(ele => {
+    x.push(ele.name);
+    lineData.push(ele.total_amount);
+    barData.push(ele.num);
+    pieData.push({ name: ele.name, value: ele.total_amount });
+  });
+  // 调用图表方法绘制
+  drawTable(x, lineData, barData);
+  // 调用饼图绘制
+  drawPie(pieData)
 };
 
 onMounted(() => {
   getHomeTotal();
-  getHomeOrder()
+  getHomeOrder();
+  getHomeLine();
 });
 </script>
 
@@ -69,10 +169,12 @@ onMounted(() => {
     <div class="content">
       <div class="time-info" id="box13">
         <div class="title">月销售额</div>
+        <!-- draw 月销售额 -->
         <div id="draw" style="width: 100%; height: 300px"></div>
       </div>
       <div class="area" id="box1">
         <div class="title">产品销售比例</div>
+        <!-- pie 产品销售比例 -->
         <div id="pie" style="width: 100%; height: 300px"></div>
       </div>
     </div>
