@@ -1,8 +1,11 @@
 <script setup>
-import { ref,onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { Plus, Delete, Edit } from "@element-plus/icons-vue";
 import { ElTable } from "element-plus";
 import { getProjectListAPI } from "../../../api/product.js";
+import dayjs from "dayjs";
+import { removeHTMLTag } from "../../../utils/common";
+import pagination from '@/components/pagination/Pagination.vue'
 // 搜索框数组对象
 const formInline = ref({
   name: "",
@@ -27,15 +30,15 @@ const handleDelete = (index, row) => {
   console.log(index, row);
 };
 
-async function getProjectList (){
-    const res = await getProjectListAPI()
-    console.log(res)
-    tableData.value = res.data.data
+async function getProjectList() {
+  const res = await getProjectListAPI();
+  console.log(res);
+  tableData.value = res.data.data;
 }
 
-onMounted(()=>{
-    getProjectList()
-})
+onMounted(() => {
+  getProjectList();
+});
 </script>
 <template>
   <div>
@@ -104,13 +107,13 @@ onMounted(()=>{
           width="120"
           show-overflow-tooltip
         >
-          <!-- <template #default="scope">
+          <template #default="scope">
             <span
               style="color:blue;cursor: pointer;"
               @click="handleDetail(scope.$index, scope.row)"
               >{{ scope.row.title }}</span
             >
-          </template> -->
+          </template>
         </el-table-column>
         <!-- 商品价格 -->
         <el-table-column prop="price" label="商品价格" width="100">
@@ -120,11 +123,11 @@ onMounted(()=>{
         </el-table-column>
         <!-- 添加时间 -->
         <el-table-column label="添加时间" prop="create_time">
-          <!-- <template #default="scope">
+          <template #default="scope">
             <span>{{
               dayjs(scope.row.create_time).format("YYYY-MM-DD HH:mm:ss")
             }}</span>
-          </template> -->
+          </template>
         </el-table-column>
         <!-- 商品卖点 -->
         <el-table-column
@@ -135,9 +138,10 @@ onMounted(()=>{
         </el-table-column>
         <!-- 商品描述 -->
         <el-table-column label="商品描述" show-overflow-tooltip prop="descs">
-          <!-- <template #default="scope">
+          <!-- 默认插槽 -->
+          <template #default="scope">
             <span>{{ removeHTMLTag(scope.row.descs) }}</span>
-          </template> -->
+          </template>
         </el-table-column>
         <!-- 操作 -->
         <el-table-column label="操作" width="200">
@@ -160,10 +164,16 @@ onMounted(()=>{
         </el-table-column>
       </el-table>
       <!-- 分页 -->
+      <div class="page">
+        <pagination></pagination>
+      </div>
     </div>
   </div>
 </template>
 <style scoped lang="scss">
+.page{
+  padding: 10px;
+}
 .header {
   background-color: #fff;
   margin-bottom: 20px;
@@ -174,12 +184,12 @@ onMounted(()=>{
 }
 .content {
   background-color: #fff;
-  >>> .active-header {
+  ::v-deep .active-header {
     color: #333;
     text-align: center;
   }
 
-  >>> .table-center {
+  ::v-deep .table-center {
     text-align: center;
   }
 
