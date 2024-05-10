@@ -10,6 +10,7 @@ import {
 import dayjs from "dayjs";
 import { removeHTMLTag } from "../../../utils/common";
 import pagination from "@/components/pagination/Pagination.vue";
+import router from "@/router";
 // 搜索框数组对象
 const formInline = ref({
   name: "",
@@ -136,6 +137,12 @@ function getCurrentPage(newPageSize) {
   getProjectList(newPageSize);
 }
 
+// 点击跳转到添加商品页面
+function toAddProduct(){
+  // console.log('添加商品')
+  router.push('/product/addProduct')
+}
+
 onMounted(() => {
   getProjectList();
 });
@@ -176,7 +183,7 @@ onMounted(() => {
         </el-form>
       </div>
       <div class="group">
-        <el-button type="warning" :icon="Plus">
+        <el-button type="warning" :icon="Plus" @click="toAddProduct">
           添加商品
         </el-button>
         <el-button type="danger" :icon="Delete">批量删除</el-button>

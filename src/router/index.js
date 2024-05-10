@@ -1,17 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Layout from "../views/layout/Index.vue";
 import Login from "../views/login/Login.vue";
-import Home from "../views/home/Home.vue"
+import Home from "../views/home/Home.vue";
 
 // 产品管理
-const Product = ()=>import('../views/product/Index.vue')
-const ProductList = ()=>import('../views/product/list/List.vue')
-const ProductCategory = ()=>import('../views/product/category/Category.vue')
+const Product = () => import("../views/product/Index.vue");
+const ProductList = () => import("../views/product/list/List.vue");
+const ProductCategory = () => import("../views/product/category/Category.vue");
+const AddProduct = () => import("../views/product/addProduct/AddProduct.vue");
 
 // 订单
-const Order = ()=>import('../views/order/Index.vue')
-const OrderList = ()=>import('../views/order/list/List.vue')
-const OrderCollect= ()=>import('../views/order/collect/Collect.vue')
+const Order = () => import("../views/order/Index.vue");
+const OrderList = () => import("../views/order/list/List.vue");
+const OrderCollect = () => import("../views/order/collect/Collect.vue");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,49 +22,57 @@ const router = createRouter({
       name: "layout",
       component: Layout,
       // layout右侧Header下方的内容
-      children:[
+      children: [
         // 首页
         {
-          path:'/',
-          name:'home',
-          component:Home
+          path: "/",
+          name: "home",
+          component: Home
         },
         // 产品管理
         {
-          path:'/product',
-          name:'product',
-          component:Product,
-          children:[
+          path: "/product",
+          name: "product",
+          component: Product,
+          children: [
             {
-              path:'productList',
-              name:'productList',
-              component:ProductList
+              path: "productList",
+              name: "productList",
+              component: ProductList
             },
             {
-              path:'category',
-              name:'category',
-              component:ProductCategory
+              path: "category",
+              name: "category",
+              component: ProductCategory
+            },
+            {
+              path: "addProduct",
+              name: "addProduct",
+              component: AddProduct,
+              meta: {
+                activeMenu: "/product/productList",
+              }
             }
           ]
         },
         // 订单管理
         {
-          path:'/order',
-          name:'order',
-          component:Order,
-          children:[
+          path: "/order",
+          name: "order",
+          component: Order,
+          children: [
             {
-              path:'orderList',
-              name:'orderList',
-              component:OrderList
+              path: "orderList",
+              name: "orderList",
+              component: OrderList
             },
             {
-              path:'collect',
-              name:'collect',
-              component:OrderCollect
+              path: "collect",
+              name: "collect",
+              component: OrderCollect
             }
           ]
-        },
+        }
       ]
     },
     {
