@@ -1,8 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { Plus, Delete, Edit } from "@element-plus/icons-vue";
-import { ElTable } from "element-plus";
-import { getProjectListAPI, searchGoodsAPI } from "../../../api/product.js";
+import { ElTable, ElMessage, ElMessageBox } from "element-plus";
+import {
+  getProjectListAPI,
+  searchGoodsAPI,
+  deleteGoodsByIdAPI
+} from "../../../api/product.js";
 import dayjs from "dayjs";
 import { removeHTMLTag } from "../../../utils/common";
 import pagination from "@/components/pagination/Pagination.vue";
@@ -25,7 +29,11 @@ async function searchGoods(params) {
     tableData.value = res.data.result;
     // res.data.result.length / pageSize.value 计算出总页数，但由于页数必须是整数，
     // 因此使用 Math.ceil() 方法向上取整，确保总页数是整数
-    total.value = Math.ceil(res.data.result.length / pageSize.value);
+    total.value = res.data.result.length;
+  } else {
+    tableData.value = [];
+    total.value = 0;
+    pageSize.value = 0;
   }
 }
 
@@ -51,9 +59,47 @@ const handleEdit = (index, row) => {
   console.log(index, row);
 };
 
+/* 
+    调用删除单个商品接口
+*/
+async function deleteGoodsById(params) {
+  const res = await deleteGoodsByIdAPI({ id: params });
+  if (res.data.status == 200) {
+    ElMessage({
+      type: "success",
+      message: "删除成功"
+    });
+    //删除成功--更新当前的视图
+    //判断当前的数据是否是当前的页面的最后一条数据---
+    if (total.value % pageSize.value === 1) {
+      currentPage.value = currentPage.value - 1 > 0 ? currentPage.value - 1 : 1;
+    }
+    getProjectList(currentPage.value);
+  }
+}
+
 // 删除按钮
 const handleDelete = (index, row) => {
   console.log(index, row);
+  ElMessageBox.confirm(
+    "你确定删除当前行的数据，确认删除是不可逆的操作？",
+    "Warning",
+    {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning"
+    }
+  )
+    .then(() => {
+      // 调用删除单个商品接口删除商品
+      deleteGoodsById(row.id);
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消删除"
+      });
+    });
 };
 
 /* 
@@ -70,16 +116,23 @@ async function getProjectList(param) {
     page: param
   });
   console.log(res);
-  tableData.value = res.data.data;
-  total.value = res.data.total;
-  pageSize.value = res.data.pageSize;
+  if (res.data.status === 200) {
+    tableData.value = res.data.data;
+    total.value = res.data.total;
+    pageSize.value = res.data.pageSize;
+  }
 }
+
+// 存储当前页码
+const currentPage = ref();
 
 /* 
     接收子传父传过来的pageSIze，并发请求获取数据
 */
 function getCurrentPage(newPageSize) {
   // console.log(newPageSize)
+  // 存储当前的页码 删除的时候 需要获取当前的页码数据
+  currentPage.value = newPageSize;
   getProjectList(newPageSize);
 }
 
