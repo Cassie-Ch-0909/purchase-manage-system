@@ -1,5 +1,6 @@
 <script setup>
 import TreeProduct from "./TreeProduct.vue";
+import UpLoadImg from "./UpLoadImg.vue";
 import { ref, reactive } from "vue";
 const ruleForm = ref(null)
 // 表单数据
@@ -39,6 +40,13 @@ const getTreeData = (val) => {
     myForm.cid = val.cid
     myForm.category = val.name
 };
+
+/* 
+    获取图片上传组件传递过来的数据
+*/
+const sendImgUrl = (val) => {
+    myForm.image.push(val)
+}
 </script>
 <template>
   <div>
@@ -77,19 +85,20 @@ const getTreeData = (val) => {
             <el-form-item label="商品卖点" prop="sellPoint">
               <el-input v-model="myForm.sellPoint"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="上传图片" prop="image">
-              <UploadImg
+            <el-form-item label="上传图片" prop="image">
+              <!-- <UploadImg
                 @sendImgUrl="sendImgUrl"
                 :fileList="fileList"
                 ref="upload"
-              ></UploadImg>
+              ></UploadImg> -->
+              <UpLoadImg @sendImgUrl="sendImgUrl"></UpLoadImg>
             </el-form-item>
             <el-form-item label="商品描述" prop="descs">
-              <WangEditor
+              <!-- <WangEditor
                 @sendWangEditor="sendWangEditor"
                 ref="wangEditor"
-              ></WangEditor>
-            </el-form-item> -->
+              ></WangEditor> -->
+            </el-form-item>
             <el-form-item label="首页轮播推进" prop="isShow">
               <el-switch
                 v-model="myForm.isShow"
