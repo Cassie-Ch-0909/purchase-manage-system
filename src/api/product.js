@@ -42,7 +42,7 @@ export function deleteGoodsByIdAPI(params) {
 /* 
     产品类目 type
 */
-export function selectItemCategoryByParentId(params) {
+export function selectItemCategoryByParentIdAPI(params) {
   return request({
     url: "/api/goods/itemCategory/selectItemCategoryByParentId",
     method: "GET",
