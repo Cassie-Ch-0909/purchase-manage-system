@@ -13,11 +13,11 @@ const prop = defineProps({
   }
 });
 
-const handleOpen = (key, keyPath) => {
-  console.log(key, keyPath);
+const handleOpen = () => {
+  // console.log(key, keyPath);
 };
-const handleClose = (key, keyPath) => {
-  console.log(key, keyPath);
+const handleClose = () => {
+  // console.log(key, keyPath);
 };
 </script>
 <template>
