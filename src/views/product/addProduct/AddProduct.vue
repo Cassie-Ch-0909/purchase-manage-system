@@ -110,16 +110,33 @@ const submitform = () => {
   addGoods();
 };
 
+// 图片数组
+const fileList = ref([])
 // 监听 title变量修改
 onMounted(() => {
   // 获取当前的rowData数据，必须是编辑界面
   if (title === "编辑") {
-    myForm = rowData;
+    // myForm = rowData;
+    Object.assign(myForm, rowData);
     console.log("99", myForm.category);
     // 图片需要转数组
     // myForm.image = JSON.parse(rowData.image);
     // 图片回显
-
+    const arr = JSON.parse(rowData.image);
+    myForm.image = arr;
+    // 图片回显 需要一个数组容器装图片 发送给子组件uploadImg
+    let img = []; // fileList = [{name:'',url:''}]
+    /* 
+        使用了数组的 forEach() 方法来遍历数组 arr 中的每个元素 ele。
+        对于每个元素，它创建了一个新的空对象 obj，然后将该元素赋值给 obj 的 url 属性，
+        最后将这个包含了 url 属性的对象 obj 添加到另一个数组 img 中。
+    */
+    arr.forEach(ele => {
+      let obj = {};
+      obj.url = ele;
+      img.push(obj);
+    });
+    fileList.value = img;
     // wangEditor回显
   }
 });
@@ -147,7 +164,7 @@ onMounted(() => {
           >
             <!-- prop是model的键名 -->
             <el-form-item label="所属分类" prop="category">
-              {{ myForm.category }}
+              <span>{{ myForm.category }}</span>
             </el-form-item>
             <el-form-item label="商品名称" prop="title">
               <el-input v-model="myForm.title"></el-input>
@@ -167,7 +184,7 @@ onMounted(() => {
                 :fileList="fileList"
                 ref="upload"
               ></UploadImg> -->
-              <UpLoadImg @sendImgUrl="sendImgUrl"></UpLoadImg>
+              <UpLoadImg @sendImgUrl="sendImgUrl" :fileList="fileList"></UpLoadImg>
             </el-form-item>
             <el-form-item label="商品描述" prop="descs">
               <!-- <WangEditor
