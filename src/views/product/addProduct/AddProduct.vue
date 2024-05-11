@@ -3,7 +3,7 @@ import TreeProduct from "./TreeProduct.vue";
 import UpLoadImg from "./UpLoadImg.vue";
 import { ref, reactive, nextTick } from "vue";
 import WangEditor from "./WangEditor.vue";
-import { addGoodsAPI,updateTbItemAPI } from "@/api/product.js";
+import { addGoodsAPI, updateTbItemAPI } from "@/api/product.js";
 import { ElMessage } from "element-plus";
 import router from "@/router";
 import useGoodsStore from "@/stores/GoodsInfo.js";
@@ -141,18 +141,17 @@ async function updateGoods() {
   }
 }
 
-
 // 提交按钮
 const submitform = async formEl => {
   // console.log("保存", myForm);
   if (!formEl) return;
-  await formEl.validate((valid) => {
+  await formEl.validate(valid => {
     if (valid) {
       if (title === "添加") {
         addGoods();
       } else {
         // 编辑
-        updateGoods()
+        updateGoods();
       }
     } else {
       console.log("error submit!!");
@@ -199,6 +198,49 @@ if (title === "编辑") {
     wangEditor.value.setWangHtml(myForm.descs);
   });
 }
+
+const upload = ref(null);
+// 重置按钮
+const resetForm = () => {
+  if (store.title === "添加") {
+    // 添加的时候是吧表单中所有内容清空
+    // 表单重置
+    ruleForm.value.resetFields();
+    // upload.value.clear()
+    fileList.value = [];
+    wangEditor.value.clearHtml();
+  } else {
+    // console.log(0);
+    // 编辑的时候是把表单内容恢复成点击进入页面的状态值
+    // 恢复之前的默认值 默认值来自pinia
+    // const { title, rowData } = store; rowData是从pinia中解构赋值出来的
+    let rowData2 = JSON.parse(JSON.stringify(rowData));
+    // 将rowData赋值给myForm
+    Object.assign(myForm, rowData2);
+    // 三个按钮是否打开
+    ruleForm.value.isShow = true;
+
+    // 对图片的处理 
+    let imgs = rowData2.image; //字符串类型---需要转数组格式
+    let arr = JSON.parse(imgs); //转数组
+    // console.log("---arr---", arr);
+    ruleForm.value.image = arr;
+    // console.log('arr---', arr);
+    fileList.value = [];
+    arr.forEach(ele => {
+      fileList.value.push({ name: "", url: ele }); //fileList 回显图片--传递给UploadImg组件
+    });
+    // 对wangEditor的处理
+    nextTick(() => {
+      wangEditor.value.setWangHtml(myForm.descs);
+    });
+  }
+};
+
+// 取消按钮
+const closePage = () => {
+  router.push("/product/productList");
+};
 </script>
 <template>
   <div>
@@ -246,6 +288,7 @@ if (title === "编辑") {
               <UpLoadImg
                 @sendImgUrl="sendImgUrl"
                 :fileList="fileList"
+                ref="upload"
               ></UpLoadImg>
             </el-form-item>
             <el-form-item label="商品描述" prop="descs">
@@ -295,7 +338,9 @@ if (title === "编辑") {
               <el-button @click="closePage">取消</el-button>
             </el-form-item> -->
             <el-form-item>
-              <el-button type="primary" @click="submitform(ruleForm)">保存</el-button>
+              <el-button type="primary" @click="submitform(ruleForm)"
+                >保存</el-button
+              >
               <el-button @click="resetForm">重置</el-button>
               <el-button @click="closePage">取消</el-button>
             </el-form-item>
