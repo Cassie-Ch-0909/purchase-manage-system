@@ -1,12 +1,16 @@
 <script setup>
 import TreeProduct from "./TreeProduct.vue";
 import UpLoadImg from "./UpLoadImg.vue";
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import WangEditor from "./WangEditor.vue";
 import { addGoodsAPI } from "@/api/product.js";
 import { ElMessage } from "element-plus";
 import router from "@/router";
+import useGoodsStore from "@/stores/GoodsInfo.js";
+// 获取仓库的方法
+const store = useGoodsStore();
 const ruleForm = ref(null);
+const { title, rowData } = store;
 // 表单数据
 let myForm = reactive({
   id: "",
@@ -100,10 +104,25 @@ async function addGoods() {
   }
 }
 
+// 提交按钮
 const submitform = () => {
-  console.log("保存", myForm);
+  // console.log("保存", myForm);
   addGoods();
 };
+
+// 监听 title变量修改
+onMounted(() => {
+  // 获取当前的rowData数据，必须是编辑界面
+  if (title === "编辑") {
+    myForm = rowData;
+    console.log("99", myForm.category);
+    // 图片需要转数组
+    // myForm.image = JSON.parse(rowData.image);
+    // 图片回显
+
+    // wangEditor回显
+  }
+});
 </script>
 <template>
   <div>
@@ -118,7 +137,7 @@ const submitform = () => {
       </el-col>
       <el-col :span="20">
         <div class="wrapper">
-          <div class="my-title">商品添加</div>
+          <div class="my-title">商品{{ store.title }}</div>
           <el-form
             :model="myForm"
             ref="ruleForm"
@@ -128,7 +147,7 @@ const submitform = () => {
           >
             <!-- prop是model的键名 -->
             <el-form-item label="所属分类" prop="category">
-              <span>{{ myForm.category }}</span>
+              {{ myForm.category }}
             </el-form-item>
             <el-form-item label="商品名称" prop="title">
               <el-input v-model="myForm.title"></el-input>

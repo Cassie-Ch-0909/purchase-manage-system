@@ -11,6 +11,11 @@ import dayjs from "dayjs";
 import { removeHTMLTag } from "../../../utils/common";
 import pagination from "@/components/pagination/Pagination.vue";
 import router from "@/router";
+import useGoodsStore from "@/stores/GoodsInfo.js";
+// 获取仓库的方法
+const store = useGoodsStore();
+console.log("store", store);
+
 // 搜索框数组对象
 const formInline = ref({
   name: "",
@@ -58,6 +63,13 @@ const toBack = () => {
 // 编辑按钮
 const handleEdit = (index, row) => {
   console.log(index, row);
+  // 跳转到添加商品界面 商品添加 编辑 查看详情在同一个页面
+  router.push("/product/addProduct");
+  // pinia存储数据 当前行的数据 --
+  store.setRowData({
+    title: "编辑",
+    rowData: row
+  });
 };
 
 /* 
@@ -116,7 +128,7 @@ async function getProjectList(param) {
   const res = await getProjectListAPI({
     page: param
   });
-  console.log(res);
+  // console.log(res);
   if (res.data.status === 200) {
     tableData.value = res.data.data;
     total.value = res.data.total;
@@ -138,9 +150,14 @@ function getCurrentPage(newPageSize) {
 }
 
 // 点击跳转到添加商品页面
-function toAddProduct(){
+function toAddProduct() {
   // console.log('添加商品')
-  router.push('/product/addProduct')
+  router.push("/product/addProduct");
+    // pinia存储数据 当前行的数据 --
+    store.setRowData({
+    title: "添加",
+    rowData: {}
+  });
 }
 
 onMounted(() => {
