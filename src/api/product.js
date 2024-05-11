@@ -60,3 +60,14 @@ export function addGoodsAPI(params) {
     params
   });
 }
+
+/* 
+    编辑商品
+*/
+export function updateTbItemAPI(params){
+  return request({
+    url: "/api/goods/item/updateTbItem",
+    method: "GET",
+    params
+  });
+}

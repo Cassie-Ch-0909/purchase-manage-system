@@ -3,7 +3,7 @@ import TreeProduct from "./TreeProduct.vue";
 import UpLoadImg from "./UpLoadImg.vue";
 import { ref, reactive, nextTick } from "vue";
 import WangEditor from "./WangEditor.vue";
-import { addGoodsAPI } from "@/api/product.js";
+import { addGoodsAPI,updateTbItemAPI } from "@/api/product.js";
 import { ElMessage } from "element-plus";
 import router from "@/router";
 import useGoodsStore from "@/stores/GoodsInfo.js";
@@ -104,10 +104,61 @@ async function addGoods() {
   }
 }
 
+/* 
+    调用编辑商品的接口 
+    updateTbItemAPI
+*/
+async function updateGoods() {
+  let {
+    id,
+    title,
+    image,
+    sellPoint,
+    price,
+    cid,
+    category,
+    num,
+    descs
+  } = myForm;
+  const res = await updateTbItemAPI({
+    id,
+    title,
+    image: JSON.stringify(image),
+    sellPoint,
+    price,
+    cid,
+    category,
+    num,
+    descs
+  });
+  if (res.data.status == 200) {
+    ElMessage({
+      message: "编辑商品成功",
+      type: "success"
+    });
+    //跳转路由
+    router.push("/product/productList");
+  }
+}
+
+
 // 提交按钮
-const submitform = () => {
+const submitform = async formEl => {
   // console.log("保存", myForm);
-  addGoods();
+  if (!formEl) return;
+  await formEl.validate((valid) => {
+    if (valid) {
+      if (title === "添加") {
+        addGoods();
+      } else {
+        // 编辑
+        updateGoods()
+      }
+    } else {
+      console.log("error submit!!");
+      // return false;
+    }
+  });
 };
 
 // 图片数组
@@ -244,7 +295,7 @@ if (title === "编辑") {
               <el-button @click="closePage">取消</el-button>
             </el-form-item> -->
             <el-form-item>
-              <el-button type="primary" @click="submitform">保存</el-button>
+              <el-button type="primary" @click="submitform(ruleForm)">保存</el-button>
               <el-button @click="resetForm">重置</el-button>
               <el-button @click="closePage">取消</el-button>
             </el-form-item>
