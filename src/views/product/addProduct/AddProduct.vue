@@ -2,6 +2,7 @@
 import TreeProduct from "./TreeProduct.vue";
 import UpLoadImg from "./UpLoadImg.vue";
 import { ref, reactive } from "vue";
+import WangEditor from "./WangEditor.vue"
 const ruleForm = ref(null)
 // 表单数据
 let myForm = reactive({
@@ -46,6 +47,15 @@ const getTreeData = (val) => {
 */
 const sendImgUrl = (val) => {
     myForm.image.push(val)
+}
+
+/* 
+    获取wangEditor组件传递过来的数据
+*/
+const sendEangEditor = (val)=>{
+  // console.log('add')
+  // console.log(val)
+  myForm.descs = val
 }
 </script>
 <template>
@@ -98,6 +108,7 @@ const sendImgUrl = (val) => {
                 @sendWangEditor="sendWangEditor"
                 ref="wangEditor"
               ></WangEditor> -->
+              <WangEditor @sendEangEditor="sendEangEditor"></WangEditor>
             </el-form-item>
             <el-form-item label="首页轮播推进" prop="isShow">
               <el-switch
