@@ -2,8 +2,11 @@
 import TreeProduct from "./TreeProduct.vue";
 import UpLoadImg from "./UpLoadImg.vue";
 import { ref, reactive } from "vue";
-import WangEditor from "./WangEditor.vue"
-const ruleForm = ref(null)
+import WangEditor from "./WangEditor.vue";
+import { addGoodsAPI } from "@/api/product.js";
+import { ElMessage } from "element-plus";
+import router from "@/router";
+const ruleForm = ref(null);
 // 表单数据
 let myForm = reactive({
   id: "",
@@ -36,27 +39,71 @@ const rules = reactive({
 /* 
     接收TreeProduct组件传递过来的数据，给页面的 所属分类 赋值渲染
 */
-const getTreeData = (val) => {
-    // console.log(val)
-    myForm.cid = val.cid
-    myForm.category = val.name
+const getTreeData = val => {
+  // console.log(val)
+  myForm.cid = val.cid;
+  myForm.category = val.name;
 };
 
 /* 
     获取图片上传组件传递过来的数据
 */
-const sendImgUrl = (val) => {
-    myForm.image.push(val)
-}
+const sendImgUrl = val => {
+  myForm.image.push(val);
+};
 
 /* 
     获取wangEditor组件传递过来的数据
 */
-const sendEangEditor = (val)=>{
+const sendEangEditor = val => {
   // console.log('add')
   // console.log(val)
-  myForm.descs = val
+  myForm.descs = val;
+};
+
+/* 
+    点击提交按钮保存数据
+*/
+
+// 调用添加商品接口
+async function addGoods() {
+  let {
+    id,
+    title,
+    image,
+    sellPoint,
+    price,
+    cid,
+    category,
+    num,
+    descs
+  } = myForm;
+  const res = await addGoodsAPI({
+    id,
+    title,
+    image: JSON.stringify(image),
+    sellPoint,
+    price,
+    cid,
+    category,
+    num,
+    descs
+  });
+  // console.log(res);
+  if (res.data.status == 200) {
+    ElMessage({
+      message: "添加商品成功",
+      type: "success"
+    });
+    //跳转路由
+    router.push("/product/productList");
+  }
 }
+
+const submitform = () => {
+  console.log("保存", myForm);
+  addGoods();
+};
 </script>
 <template>
   <div>
@@ -146,6 +193,11 @@ const sendEangEditor = (val)=>{
               >
               <el-button @click="closePage">取消</el-button>
             </el-form-item> -->
+            <el-form-item>
+              <el-button type="primary" @click="submitform">保存</el-button>
+              <el-button @click="resetForm">重置</el-button>
+              <el-button @click="closePage">取消</el-button>
+            </el-form-item>
           </el-form>
         </div>
       </el-col>

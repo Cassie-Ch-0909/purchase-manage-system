@@ -49,3 +49,14 @@ export function selectItemCategoryByParentIdAPI(params) {
     params
   });
 }
+
+/* 
+    添加商品
+*/
+export function addGoodsAPI(params) {
+  return request({
+    url: "/api/goods/item/insertTbItem",
+    method: "GET",
+    params
+  });
+}
