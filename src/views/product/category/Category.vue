@@ -1,7 +1,8 @@
 <script setup>
 import { reactive, ref } from "vue";
-import { itemCategoryAPI } from "@/api/product";
+import { itemCategoryAPI, deleteCategoryByIdAPI } from "@/api/product";
 import Dialog from "./Dialog.vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 // const renderContent = (h, { node, data }) => {
 //   console.log(node, data);
 //   return h(
@@ -132,7 +133,7 @@ function addCategory() {
   console.log("新增一级类目");
   child.value.dialogVisible = true;
   info.value = {
-    title: "新增一级类目",
+    title: "新增一级类目"
   };
   type.value = 3;
   // 清除输入框
@@ -142,9 +143,40 @@ function addCategory() {
 /* 
     删除按钮
 */
-function remove() {
-  console.log("remove");
-}
+//删除  1. 弹框提示信息  2. 确定删除--请求接口  3. 更新视图
+const remove = (node, data) => {
+  ElMessageBox.confirm(
+    "你确定删除当前行的数据，确认删除是不可逆的操作?",
+    "Warning",
+    {
+      confirmButtonText: "确认",
+      cancelButtonText: "取消",
+      type: "删除"
+    }
+  )
+    .then(async () => {
+      //删除操作---操作数据库的接口--------------------------
+      //执行删除接口-------------------------
+      deleteCategoryByIdAPI({ id: data.id }).then(res => {
+        // console.log("-删除---", res.data);
+        if (res.data.status == 200) {
+          ElMessage({
+            showClose: true,
+            message: "恭喜你，删除成功",
+            type: "success"
+          });
+          itemCategory();
+          //强制刷新视图
+        }
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消删除"
+      });
+    });
+};
 </script>
 <template>
   <div class="category">

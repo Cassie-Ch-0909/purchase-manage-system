@@ -114,3 +114,14 @@ export function insertCategoryAPI(params){
     params
   });
 }
+
+/* 
+    删除类目
+*/
+export function deleteCategoryByIdAPI(params){
+  return request({
+    url: "/api/content/deleteContentCategoryById",
+    method: "GET",
+    params
+  });
+}
