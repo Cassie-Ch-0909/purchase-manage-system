@@ -167,7 +167,7 @@ const wangEditor = ref(null);
 
 // 监听 title变量修改
 // 获取当前的rowData数据，必须是编辑界面
-if (title === "编辑") {
+if (title === "编辑"|| store.title=='详情') {
   // myForm = rowData;
   Object.assign(myForm, rowData);
   console.log("99", myForm.category);
@@ -338,10 +338,10 @@ const closePage = () => {
               <el-button @click="closePage">取消</el-button>
             </el-form-item> -->
             <el-form-item>
-              <el-button type="primary" @click="submitform(ruleForm)"
+              <el-button v-if="store.title!='详情'" type="primary" @click="submitform(ruleForm)"
                 >保存</el-button
               >
-              <el-button @click="resetForm">重置</el-button>
+              <el-button v-if="store.title!='详情'" @click="resetForm">重置</el-button>
               <el-button @click="closePage">取消</el-button>
             </el-form-item>
           </el-form>

@@ -163,6 +163,18 @@ function toAddProduct() {
 onMounted(() => {
   getProjectList();
 });
+
+/* 
+    查看商品详情
+*/
+const handleDetail = (index, row) => {
+  router.push("/product/addProduct");
+  //pinia 存储数据 当前行的数据 ---
+  store.setRowData({
+    title: "详情",
+    rowData: row
+  });
+};
 </script>
 <template>
   <div>
