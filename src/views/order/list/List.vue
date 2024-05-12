@@ -1,9 +1,120 @@
 <script setup>
-    
+import Pagination from '@/components/pagination/Pagination.vue'
+import { ref } from 'vue'
+import "element-plus/theme-chalk/el-message-box.css";
+import { getOrderListAPI } from '@/api/order'
+import dayjs from 'dayjs'
+
+const formInline = ref({})
+const tableData = ref([])//订单列表数据展示
+const total = ref(10)
+const pageSize = ref(1)
+const currentPage = ref()
+/* 
+    获取订单列表
+*/
+async function getOrderList(param) {
+  const res = await getOrderListAPI({ page: param })
+  // console.log(param,res)
+  if (res.data.status == 200) {
+    let arr = res.data.data;
+    arr.forEach(ele => {
+      ele.huizongStatus = ele.huizongStatus == 1 ? '未汇总' : "已汇总"
+      ele.yudingTime = dayjs(ele.yudingTime).format('YYYY-MM-DD')
+    })
+    tableData.value = arr;
+    total.value = res.data.total;
+    pageSize.value = res.data.pageSize;
+  } else {
+    tableData.value = []
+    total.value = 1;
+    pageSize.value = 1;
+  }
+}
+getOrderList(2)
+
+//获取分页页码------------------------------
+const CurrentChange = (page) => {
+  // console.log('ss',page)
+  getOrderList(page)
+  currentPage.value = page
+}
 </script>
 <template>
-    订单列表
-</template>
-<style scoped>
+  <div class="header">
+    <!-- 预定编号 预定时间 查询按钮 -->
+    <div class="form">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="预定编号">
+          <el-input v-model="formInline.name" placeholder="预定编号"></el-input>
+        </el-form-item>
+        <el-form-item label="预定时间">
+          <el-date-picker
+            v-model="formInline.date"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <!-- 订单汇总和导出Excel按钮 -->
+    <div class="group">
+      <el-button type="warning" @click="orderCollect">订单汇总</el-button>
+      <!-- <el-button type="warning">导出</el-button> -->
+      <el-button class="order-btn" type="warning" @click="download"
+        >导出</el-button
+      >
+    </div>
+  </div>
+  <!-- 表格区域 -->
+  <div class="content">
+      <el-table id="table" :data="tableData" border style="width: 100%" header-cell-class-name="active-header"
+        cell-class-name="table-center" @select="select">
+        <!-- 复选框 -->
+        <el-table-column type="selection" width="55" :selectable="selectable">
+        </el-table-column>
+        <!-- 订单编号 -->
+        <el-table-column prop="code" label="订单编号">
+          <template #default="scope">
+            <span @click="toOrderDecs(scope.row)" style="color:blue;cursor: pointer;">{{ scope.row.code }}</span>
+          </template>
+        </el-table-column>
+        <!-- 下单人 -->
+        <el-table-column prop="ordername" label="下单人">
+        </el-table-column>
+        <!-- 所属单位 -->
+        <el-table-column prop="company" label="所属单位">
+        </el-table-column>
+        <!-- 联系电话 -->
+        <el-table-column prop="phone" label="联系电话">
+        </el-table-column>
+        <!-- 预定时间 -->
+        <el-table-column prop="yudingTime" label="预定时间">
+          <!-- <template slot-scope="scope">
+            {{ dayjs(scope.row.yudingTime).format('YYYY-MM-DD') }}
+          </template> -->
+        </el-table-column>
+        <!-- 订单总价格 -->
+        <el-table-column prop="price" label="订单总价格">
+        </el-table-column>
+        <!-- 汇总状态 -->
+        <el-table-column prop="huizongStatus" label="汇总状态">
+          <!-- <template slot-scope="scope">
+            {{ scope.row.huizongStatus == 1 ? '未汇总' : '已汇总' }}
+          </template> -->
+        </el-table-column>
+      </el-table>
 
-</style>
+      <!-- 分页 -->
+      <div style="padding:10px;">
+
+        <Pagination :total="total" :pageSize="pageSize" @getCurrentPage="CurrentChange"></Pagination>
+      </div>
+
+    </div>
+</template>
+<style scoped></style>
