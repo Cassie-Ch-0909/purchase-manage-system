@@ -24,3 +24,25 @@ export function changeStatusAPI(params) {
     params
   });
 }
+
+/* 
+    汇总订单列表 /api/order/collect
+*/
+export function getCollectOrderListAPI(params) {
+  return request({
+    url: "/api/order/collect",
+    method: "GET",
+    params
+  });
+}
+
+/* 
+    撤销汇总
+*/
+export function cancelAPI(params){
+    return request({
+        url:'/api/order/cancel',
+        method: "GET",
+        params
+    })
+}
