@@ -13,3 +13,14 @@ export function getOrderListAPI(params) {
     params
   });
 }
+
+/* 
+    订单汇总 /api/order/changeStatus
+*/
+export function changeStatusAPI(params) {
+  return request({
+    url: "/api/order/changeStatus",
+    method: "GET",
+    params
+  });
+}
