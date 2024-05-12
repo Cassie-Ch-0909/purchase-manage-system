@@ -103,3 +103,14 @@ export function updateItemCategoryAPI(params) {
     params
   });
 }
+
+/* 
+    新增一级类目
+*/
+export function insertCategoryAPI(params){
+  return request({
+    url: "/api/itemCategory/insertCategory",
+    method: "GET",
+    params
+  });
+}

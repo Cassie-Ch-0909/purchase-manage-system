@@ -104,25 +104,39 @@ function append(data) {
     title: `新增【${data.name}】子级分类`,
     cid: data.cid
   };
-  type.value = 1
+  type.value = 1;
   // 清除输入框
-  child.value.input = '';
+  child.value.input = "";
 }
 
 /* 
     修改按钮
 */
-function update(node,data) {
+function update(node, data) {
   // console.log("update",node);
-  console.log("update",data);
+  console.log("update", data);
   child.value.dialogVisible = true;
   info.value = {
     title: `修改【${data.name}】名称`,
     id: data.id
   };
-  type.value = 2
+  type.value = 2;
   // 清除输入框
-  child.value.input = '';
+  child.value.input = "";
+}
+
+/* 
+    新增一级类目
+*/
+function addCategory() {
+  console.log("新增一级类目");
+  child.value.dialogVisible = true;
+  info.value = {
+    title: "新增一级类目",
+  };
+  type.value = 3;
+  // 清除输入框
+  child.value.input = "";
 }
 
 /* 
@@ -137,7 +151,12 @@ function remove() {
     <div class="wrapper">
       <div class="title">产品类目管理</div>
       <div class="tree">
-        <el-button type="warning" style="margin-bottom:20px;" @click="addCategory">新增一级导航类目</el-button>
+        <el-button
+          type="warning"
+          style="margin-bottom:20px;"
+          @click="addCategory"
+          >新增一级导航类目</el-button
+        >
         <el-tree
           style="max-width: 600px"
           :data="data.result"
@@ -201,7 +220,12 @@ function remove() {
           </template>
         </el-tree>
       </div>
-      <Dialog ref="child" :info="info" @updateViews="itemCategory" :type="type"></Dialog>
+      <Dialog
+        ref="child"
+        :info="info"
+        @updateViews="itemCategory"
+        :type="type"
+      ></Dialog>
     </div>
   </div>
 </template>

@@ -1,6 +1,10 @@
 <script setup>
 import { ref, defineProps, defineEmits } from "vue";
-import { insertItemCategoryAPI, updateItemCategoryAPI } from "@/api/product.js";
+import {
+  insertItemCategoryAPI,
+  updateItemCategoryAPI,
+  insertCategoryAPI
+} from "@/api/product.js";
 import { ElMessage } from "element-plus";
 
 // 接收父组件传递过来的数据
@@ -51,6 +55,24 @@ async function updateItemCategory(params) {
   }
 }
 
+/* 
+    调接口添加一级分类
+*/
+async function insertCategory(params) {
+  const res = await insertCategoryAPI(params);
+  console.log(res);
+  if (res.data.status == 200) {
+    ElMessage({
+      showClose: true,
+      message: "恭喜你，新增成功",
+      type: "success"
+    });
+    //隐藏弹框
+    dialogVisible.value = false;
+    emit("updateViews");
+  }
+}
+
 // 关闭弹框
 const handleClose = () => {
   dialogVisible.value = false;
@@ -75,6 +97,11 @@ const submitHandle = () => {
     // 调接口修改二级分类
     updateItemCategory({
       id: props.info.id,
+      name: input.value
+    });
+  } else {
+    // 调接口添加一级分类
+    insertCategory({
       name: input.value
     });
   }
