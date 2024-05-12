@@ -5,13 +5,15 @@ import "element-plus/theme-chalk/el-message-box.css";
 import { getOrderListAPI, changeStatusAPI } from "@/api/order";
 import dayjs from "dayjs";
 import { ElMessage, ElMessageBox } from "element-plus";
+import * as XLSX from "xlsx";
+import FileSaver from "file-saver";
 
 const formInline = ref({});
 const tableData = ref([]); //订单列表数据展示
 const total = ref(10);
 const pageSize = ref(1);
 const currentPage = ref();
-/* 
+/*
     获取订单列表
 */
 async function getOrderList(param) {
@@ -41,7 +43,7 @@ const CurrentChange = page => {
   currentPage.value = page;
 };
 
-/* 
+/*
     复选框选中的订单数组
 */
 const ids = ref();
@@ -55,7 +57,7 @@ function select(selection, row) {
   // 存储当前的勾选行的数据信息
 }
 
-/* 
+/*
     调接口订单汇总
 */
 async function changeStatus(params) {
@@ -83,12 +85,41 @@ async function changeStatus(params) {
   }
 }
 
-/* 
+/*
     点击订单汇总按钮
 */
 function orderCollect() {
   changeStatus({ ids: ids.value.join(",") });
 }
+
+/*
+    导出Excel
+*/
+//导出名称
+const name = ref("首客生鲜");
+const download = () => {
+  // 通过id，获取导出的表格数据
+  const wb = XLSX.utils.table_to_book(document.getElementById("table"), {
+    raw: true
+  });
+  const wbout = XLSX.write(wb, {
+    bookType: "xlsx",
+    bookSST: true,
+    type: "array"
+  });
+  try {
+    FileSaver.saveAs(
+      new Blob([wbout], {
+        // 定义文件格式流
+        type: "application/octet-stream"
+      }),
+      name.value + ".xlsx"
+    );
+  } catch (e) {
+    console.log(e);
+  }
+  return wbout;
+};
 </script>
 <template>
   <div class="header">
@@ -118,6 +149,15 @@ function orderCollect() {
       <el-button class="order-btn" type="warning" @click="download"
         >导出</el-button
       >
+      <!-- <download-excel
+        class="export-excel-wrapper"
+        :data="tableData"
+        :fields="json_fields"
+        :header="title"
+></download-excel>        name="采购公司订单列表.xls"
+      
+        <el-button size="small" type="warning">导出</el-button>
+      </download-excel> -->
     </div>
   </div>
   <!-- 表格区域 -->
