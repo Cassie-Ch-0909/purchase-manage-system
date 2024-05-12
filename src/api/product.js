@@ -92,3 +92,14 @@ export function insertItemCategoryAPI(params) {
     params
   });
 }
+
+/* 
+    修改类目
+*/
+export function updateItemCategoryAPI(params) {
+  return request({
+    url: "/api/itemCategory/updateCategory",
+    method: "GET",
+    params
+  });
+}

@@ -1,10 +1,10 @@
 <script setup>
-import { ref, defineProps,defineEmits } from "vue";
-import { insertItemCategoryAPI } from "@/api/product.js";
+import { ref, defineProps, defineEmits } from "vue";
+import { insertItemCategoryAPI, updateItemCategoryAPI } from "@/api/product.js";
 import { ElMessage } from "element-plus";
 
 // 接收父组件传递过来的数据
-const props = defineProps(["info"]);
+const props = defineProps(["info", "type"]);
 
 // 是否显示弹框
 const dialogVisible = ref(false);
@@ -16,7 +16,7 @@ const input = ref("");
 const emit = defineEmits(["updateViews"]);
 
 /* 
-    调用接口新增分类
+    调用接口新增二级分类
 */
 async function insertItemCategory(params) {
   const res = await insertItemCategoryAPI(params);
@@ -25,6 +25,24 @@ async function insertItemCategory(params) {
     ElMessage({
       showClose: true,
       message: "恭喜你，新增成功",
+      type: "success"
+    });
+    //隐藏弹框
+    dialogVisible.value = false;
+    emit("updateViews");
+  }
+}
+
+/* 
+    调接口修改二级分类
+*/
+async function updateItemCategory(params) {
+  const res = await updateItemCategoryAPI(params);
+  console.log(res);
+  if (res.data.status == 200) {
+    ElMessage({
+      showClose: true,
+      message: "恭喜你，修改成功",
       type: "success"
     });
     //隐藏弹框
@@ -46,11 +64,20 @@ const isShow = () => {
 
 //弹框---确定---
 const submitHandle = () => {
-  // 调接口添加一级分类
-  insertItemCategory({
-    cid: props.info.cid,
-    name: input.value
-  });
+  // console.log(props.type);
+  if (props.type === 1) {
+    // 调接口添加二级分类
+    insertItemCategory({
+      cid: props.info.cid,
+      name: input.value
+    });
+  } else if (props.type === 2) {
+    // 调接口修改二级分类
+    updateItemCategory({
+      id: props.info.id,
+      name: input.value
+    });
+  }
 };
 
 defineExpose({

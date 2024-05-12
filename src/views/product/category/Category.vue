@@ -83,6 +83,8 @@ async function itemCategory() {
 }
 itemCategory();
 
+//1 新增 2 修改 3 一级分类
+const type = ref(1);
 // Dialog组件绑定ref为child
 const child = ref(null);
 // 父传子dialog标题
@@ -91,7 +93,7 @@ const info = ref({
 });
 
 /* 
-    新增按钮
+    新增子级分类按钮
 */
 function append(data) {
   // console.log('append')
@@ -102,13 +104,25 @@ function append(data) {
     title: `新增【${data.name}】子级分类`,
     cid: data.cid
   };
+  type.value = 1
+  // 清除输入框
+  child.value.input = '';
 }
 
 /* 
     修改按钮
 */
-function update() {
-  console.log("update");
+function update(node,data) {
+  // console.log("update",node);
+  console.log("update",data);
+  child.value.dialogVisible = true;
+  info.value = {
+    title: `修改【${data.name}】名称`,
+    id: data.id
+  };
+  type.value = 2
+  // 清除输入框
+  child.value.input = '';
 }
 
 /* 
@@ -123,6 +137,7 @@ function remove() {
     <div class="wrapper">
       <div class="title">产品类目管理</div>
       <div class="tree">
+        <el-button type="warning" style="margin-bottom:20px;" @click="addCategory">新增一级导航类目</el-button>
         <el-tree
           style="max-width: 600px"
           :data="data.result"
@@ -186,7 +201,7 @@ function remove() {
           </template>
         </el-tree>
       </div>
-      <Dialog ref="child" :info="info" @updateViews="itemCategory"></Dialog>
+      <Dialog ref="child" :info="info" @updateViews="itemCategory" :type="type"></Dialog>
     </div>
   </div>
 </template>
