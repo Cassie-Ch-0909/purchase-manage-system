@@ -64,9 +64,30 @@ export function addGoodsAPI(params) {
 /* 
     编辑商品
 */
-export function updateTbItemAPI(params){
+export function updateTbItemAPI(params) {
   return request({
     url: "/api/goods/item/updateTbItem",
+    method: "GET",
+    params
+  });
+}
+
+/* 
+    获取商品分类
+*/
+export function itemCategoryAPI() {
+  return request({
+    url: "/api/itemCategory",
+    method: "GET"
+  });
+}
+
+/* 
+    新增子级类目
+*/
+export function insertItemCategoryAPI(params) {
+  return request({
+    url: "/api/itemCategory/insertItemCategory",
     method: "GET",
     params
   });
