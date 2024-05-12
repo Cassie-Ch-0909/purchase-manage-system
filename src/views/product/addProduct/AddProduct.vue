@@ -244,6 +244,7 @@ const closePage = () => {
 </script>
 <template>
   <div>
+    <Breadcrumb></Breadcrumb>
     <el-row :gutter="20">
       <el-col :span="4">
         <div class="nav">

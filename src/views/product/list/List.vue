@@ -178,6 +178,7 @@ const handleDetail = (index, row) => {
 </script>
 <template>
   <div>
+    <Breadcrumb></Breadcrumb>
     <!-- 1. 产品搜索 -->
     <div class="header">
       <div class="form">

@@ -123,6 +123,7 @@ const download = () => {
 </script>
 <template>
   <div class="header">
+    <Breadcrumb></Breadcrumb>
     <!-- 预定编号 预定时间 查询按钮 -->
     <div class="form">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">

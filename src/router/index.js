@@ -21,29 +21,44 @@ const router = createRouter({
       path: "/",
       name: "layout",
       component: Layout,
+      meta:{
+        title:"首页"
+      },
       // layout右侧Header下方的内容
       children: [
         // 首页
         {
           path: "/",
           name: "home",
-          component: Home
+          component: Home,
+          meta:{
+            title:"首页"
+          }
         },
         // 产品管理
         {
           path: "/product",
           name: "product",
           component: Product,
+          meta:{
+            title:"产品管理"
+          },
           children: [
             {
               path: "productList",
               name: "productList",
-              component: ProductList
+              component: ProductList,
+              meta:{
+                title:"产品列表"
+              }
             },
             {
               path: "category",
               name: "category",
-              component: ProductCategory
+              component: ProductCategory,
+              meta:{
+                title:"产品分类"
+              }
             },
             {
               path: "addProduct",
@@ -51,6 +66,7 @@ const router = createRouter({
               component: AddProduct,
               meta: {
                 activeMenu: "/product/productList",
+                title:"产品分类"
               }
             }
           ]
@@ -60,16 +76,25 @@ const router = createRouter({
           path: "/order",
           name: "order",
           component: Order,
+          meta:{
+            title:"订单管理"
+          },
           children: [
             {
               path: "orderList",
               name: "orderList",
-              component: OrderList
+              component: OrderList,
+              meta:{
+                title:"订单列表"
+              }
             },
             {
               path: "collect",
               name: "collect",
-              component: OrderCollect
+              component: OrderCollect,
+              meta:{
+                title:"订单汇总"
+              }
             }
           ]
         }
